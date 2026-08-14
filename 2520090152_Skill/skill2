@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+int main() {
+    char input[100];
+    char ch;
+    int index;
+
+    while (1) {
+        index = 0;
+
+        printf("myshell> ");
+        fflush(stdout);
+
+        while (1) {
+            // Read one character from keyboard
+            read(STDIN_FILENO, &ch, 1);
+
+            // Handle Enter key
+            if (ch == '\n') {
+                input[index] = '\0';
+                break;
+            }
+
+            // Handle Backspace
+            if (ch == 127 || ch == '\b') {
+                if (index > 0) {
+                    index--;
+                    printf("\b \b");
+                    fflush(stdout);
+                }
+            }
+            else {
+                // Store character in input buffer
+                if (index < 99) {
+                    input[index] = ch;
+                    index++;
+
+                    printf("%c", ch);
+                    fflush(stdout);
+                }
+            }
+        }
+
+        printf("\n");
+
+        // Exit condition
+        if (strcmp(input, "exit") == 0) {
+            printf("Exiting shell...\n");
+            break;
+        }
+
+        // Handle empty input
+        if (index == 0) {
+            continue;
+        }
+
+        // Display entered command
+        printf("You entered: %s\n", input);
+    }
+
+    return 0;
+}
